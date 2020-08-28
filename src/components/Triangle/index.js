@@ -52,7 +52,7 @@ const DiagonalValue = styled(BaseSpan)`
 
 export default class Triangle extends React.Component {
   render() {
-    const { A, B, C } = this.props;
+    const { A, B, C, roundedA, roundedB, roundedC } = this.props;
     return (
       <Wrap>
         <BaseLine width={15} top={30}></BaseLine>
@@ -60,13 +60,13 @@ export default class Triangle extends React.Component {
         <DiagonalLine width={18} left={-1.6} top={24.97}></DiagonalLine>
 
         <BaseValue width={15} top={28}>
-          {A}
+          {A === roundedA ? A : `~ ${A.toFixed(1)}`}
         </BaseValue>
         <VerticalValue width={10} left={8.4} top={25}>
-          {B}
+          {B === roundedB ? B : `~ ${B.toFixed(1)}`}
         </VerticalValue>
         <DiagonalValue width={18} left={-1.2} top={24.97}>
-          {C}
+          {C === roundedC ? C : `~ ${C.toFixed(1)}`}
         </DiagonalValue>
       </Wrap>
     );

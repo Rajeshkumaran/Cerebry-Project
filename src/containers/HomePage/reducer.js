@@ -1,6 +1,8 @@
 import { LOAD_ARGUMENTS } from "./constants";
 export const initialState = {
-  arguments: {},
+  arguments: {
+    isParamsError: false,
+  },
 };
 const reducer = (preloadedState = null) => (
   state = preloadedState || initialState,
@@ -8,9 +10,9 @@ const reducer = (preloadedState = null) => (
 ) => {
   switch (action.type) {
     case LOAD_ARGUMENTS: {
-      return { ...state,arguments:{...action.payload} };
+      return { ...state, arguments: { ...state.arguments, ...action.payload } };
     }
-    
+
     default: {
       return state;
     }

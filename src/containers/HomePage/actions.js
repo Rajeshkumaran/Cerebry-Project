@@ -6,4 +6,3 @@ export const loadArguments = (payload) => {
     payload,
   };
 };
-

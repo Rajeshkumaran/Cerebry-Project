@@ -6,7 +6,7 @@ import { createStore, applyMiddleware, combineReducers } from "redux";
 import reducer from "../src/reducers";
 import { matchRoutes } from "react-router-config";
 import routes from "../src/routes";
-import { getParams } from "./utils";
+import { getParams, checkParamsExist } from "./utils";
 var bodyParser = require("body-parser");
 
 const server = express();
@@ -28,7 +28,6 @@ const createMockReducers = (reducers) => {
 const fetchData = (branch, store, params) => {
   const promises = branch.map(({ route, match }) => {
     const { component } = route;
-    console.log("debugger server", component, params);
     if (component.fetchData instanceof Function)
       return component.fetchData(match, store, { params });
   });
@@ -41,12 +40,11 @@ server.get("*", async (req, res) => {
     const rootReducer = combineReducers({
       ...createMockReducers(reducer),
     });
-    const params = getParams(url);
-    console.log("params", params);
     const sagaMiddleware = createSagaMiddleware();
     const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
     store.runSaga = sagaMiddleware.run;
     const branch = matchRoutes(routes, req.url);
+    const params = getParams(url);
 
     const promises = fetchData(branch, store, params);
     const resolvedPromises = Promise.all(promises)

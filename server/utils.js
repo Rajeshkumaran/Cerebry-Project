@@ -6,7 +6,7 @@ export const getParams = (url) => {
   let args = {};
   params.split("&").map((item) => {
     let [key, value] = item.split("=");
-    args = { ...args, [key]: value };
+    args = { ...args, [key.toUpperCase()]: parseInt(value, 10) };
     return null;
   });
 

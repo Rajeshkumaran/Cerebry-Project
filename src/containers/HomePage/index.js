@@ -9,7 +9,13 @@ import Square from "../../components/Square";
 import { COLORS } from "../../constants";
 import Triangle from "../../components/Triangle";
 import Grid from "../../components/Grid";
-const Container = styled("div")`
+import Header from "../../components/Header";
+import ErrorPage from "../../components/ErrorPage";
+import { computeNewArg } from "../../utils/helpers";
+const Wrap = styled("div")`
+  position: relative;
+`;
+const TheormContainer = styled("div")`
   width: 100%;
   margin: 100px;
   margin-left: 400px;
@@ -44,6 +50,12 @@ const BaseSquare = styled("div")`
   background: ${COLORS.RED};
   border: 0.5px solid #000;
 `;
+const Formula = styled("div")`
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 2.4rem;
+  color: ${COLORS.CEREBRY_THEME_BLUE};
+`;
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
@@ -54,49 +66,97 @@ class HomePage extends React.Component {
   static fetchData = (match, store, { params }) => {
     const { runSaga } = store;
     const promises = [];
-    console.log("debugger fetchData", params);
     promises.push(runSaga(homeSaga, params).done);
 
     return Promise.all(promises);
   };
+  submitArguments = ({ A, B }) => {
+    let nA = A;
+    let nB = B;
+    if (A < B) {
+      nA = B;
+      nB = A;
+    }
+    let C = Math.ceil(computeNewArg(A, B));
+    this.props.dispatch(
+      loadArguments({
+        A,
+        B,
+        C,
+        roundedA: A,
+        roundedB: B,
+        roundedC: C,
+        isParamsError: false,
+      }),
+    );
+  };
   render() {
-    console.log("Homepage props", this.props);
+    console.log("Homepage props", this.props.arguments);
     const { arguments: args } = this.props;
-    const { a = 4, b = 3, c = 5 } = args;
-    const A = parseInt(a, 10);
-    const B = parseInt(b, 10);
-    const C = parseInt(c, 10);
+    const {
+      A,
+      B,
+      C,
+      roundedA,
+      roundedB,
+      roundedC,
+      isParamsError,
+      newlyComputed,
+    } = args;
+
     return (
-      <Container>
-        <Triangle {...{ A, B, C }} />
-        <DiagonalSquare width={18} top={6.7} left={-7.4} height={20}>
-          <Grid
-            row={C < 20 ? C : 10}
-            rowWidth={18}
-            rowHeight={C < 20 ? 20 / C : 20 / 10}
-            squareColor={COLORS.RED}
-            isDiagonal
-            verticalValue={C < 20 ? B : 5}
-            squareColor2={COLORS.LIGHT_BLUE}
-          />
-        </DiagonalSquare>
-        <VerticalSqaure width={10} top={0.1} left={15.1} height={10}>
-          <Grid
-            row={B < 10 ? B : 5}
-            rowWidth={10}
-            rowHeight={B < 10 ? 10 / B : 10 / 5}
-            squareColor={COLORS.LIGHT_BLUE}
-          />
-        </VerticalSqaure>
-        <BaseSquare width={15} left={0} height={15} top={0.2}>
-          <Grid
-            row={A < 15 ? A : 15}
-            rowWidth={15}
-            rowHeight={A < 15 ? 15 / A : 15 / 15}
-            squareColor={COLORS.RED}
-          />
-        </BaseSquare>
-      </Container>
+      <Wrap>
+        <Header />
+        {isParamsError ? (
+          <ErrorPage submitArguments={this.submitArguments} />
+        ) : (
+          <TheormContainer>
+            <Formula>
+              Formula : a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup>
+            </Formula>
+            {newlyComputed && (
+              <p
+                className={css`
+                  font-size: 1.4rem;
+                  font-weight: bold;
+                `}
+              >
+                Computed argument : {newlyComputed.toLowerCase()} ={" "}
+                {args[newlyComputed]}
+              </p>
+            )}
+
+            <Triangle {...{ A, B, C, roundedA, roundedB, roundedC }} />
+            <DiagonalSquare width={18} top={6.7} left={-7.4} height={20}>
+              <Grid
+                row={roundedC < 20 ? roundedC : 10}
+                rowWidth={18}
+                rowHeight={roundedC < 20 ? 20 / roundedC : 20 / 10}
+                squareColor={COLORS.RED}
+                isDiagonal
+                verticalValue={roundedC < 20 ? roundedB : 5}
+                squareColor2={COLORS.LIGHT_BLUE}
+              />
+            </DiagonalSquare>
+            <VerticalSqaure width={10} top={0.1} left={15.1} height={10}>
+              <Grid
+                row={roundedB < 10 ? roundedB : 5}
+                rowWidth={10}
+                rowHeight={roundedB < 10 ? 10 / roundedB : 10 / 5}
+                squareColor={COLORS.LIGHT_BLUE}
+              />
+            </VerticalSqaure>
+            <BaseSquare width={15} left={0} height={15} top={0.2}>
+              <Grid
+                row={roundedA < 15 ? roundedA : 15}
+                rowWidth={15}
+                rowHeight={roundedA < 15 ? 15 / roundedA : 15 / 15}
+                squareColor={COLORS.RED}
+              />
+            </BaseSquare>
+          </TheormContainer>
+        )}
+      </Wrap>
     );
   }
 }
