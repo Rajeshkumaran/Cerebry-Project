@@ -9,6 +9,7 @@ const Wrap = styled("div")`
   background: ${COLORS.CEREBRY_THEME_BLUE};
   display: flex;
   align-items: center;
+  box-shadow: 2px 1px 5px #000;
 `;
 const Item = styled("li")`
   margin-left: 4.4rem;

@@ -25,7 +25,7 @@ function Html({ store, url }) {
   return `<!doctype html>
   <html>
     <head>
-      <title>Rajesh - SSR Boilerplate </title>
+      <title>Cerebry</title>
       <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, height=device-height, viewport-fit=cover"

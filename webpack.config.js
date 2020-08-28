@@ -1,9 +1,9 @@
-const path = require('path');
+const path = require("path");
 module.exports = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    path: path.resolve('public'),
-    filename: 'bundle.js',
+    path: path.resolve("public"),
+    filename: "bundle.js",
   },
   module: {
     rules: [
@@ -11,18 +11,18 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
         },
       },
       {
         test: /\.(jpg|png|gif)$/,
         use: [
           {
-            loader: 'file-loader',
+            loader: "file-loader",
             options: {
               // Inline files smaller than 10 kB
               limit: 10000,
-              name: '/[name].[ext]',
+              name: "/[name].[ext]",
             },
           },
         ],
