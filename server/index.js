@@ -36,7 +36,6 @@ const fetchData = (branch, store, params) => {
 server.get("*", async (req, res) => {
   try {
     const { url } = req;
-    console.log("req ", url);
     const rootReducer = combineReducers({
       ...createMockReducers(reducer),
     });
@@ -56,7 +55,6 @@ server.get("*", async (req, res) => {
         console.error("Caught in promise rejection", err);
         res.status(500).send("Internal server error");
       });
-    console.log("resolvedPromises", resolvedPromises);
   } catch (err) {
     console.log("error in server side rendering .....", err);
     res.status(500).send("internal server error");

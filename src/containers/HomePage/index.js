@@ -31,7 +31,7 @@ const DiagonalSquare = styled("div")`
   border: 0.5px solid #000;
 `;
 
-const VerticalSqaure = styled("div")`
+const VerticalSquare = styled("div")`
   width: ${(props) => props.width}rem;
   transform: rotate(90deg);
   height: ${(props) => props.height}rem;
@@ -40,6 +40,8 @@ const VerticalSqaure = styled("div")`
   left: ${(props) => props.left}rem;
   background: ${COLORS.LIGHT_BLUE};
   border: 0.5px solid #000;
+  transition: all 1s ease-in-out;
+  ${(props) => (props.animate ? scaleUp : "")}
 `;
 const BaseSquare = styled("div")`
   width: ${(props) => props.width}rem;
@@ -49,6 +51,7 @@ const BaseSquare = styled("div")`
   left: ${(props) => props.left}rem;
   background: ${COLORS.RED};
   border: 0.5px solid #000;
+  ${(props) => (props.animate ? scaleUp : "")}
 `;
 const Formula = styled("div")`
   font-size: 1.4rem;
@@ -56,13 +59,23 @@ const Formula = styled("div")`
   margin-bottom: 2.4rem;
   color: ${COLORS.CEREBRY_THEME_BLUE};
 `;
+const scaleUp = css`
+  transform: scale(1.2);
+  z-index: 1;
+  transition: all 1s ease-in-out;
+`;
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       message: "",
+      animateHorizontalSquare: false,
+      animateVerticalSquare: false,
+      animateDiagonalSquare: false,
+      highlightPortionInDiagonal: "",
     };
   }
+
   static fetchData = (match, store, { params }) => {
     const { runSaga } = store;
     const promises = [];
@@ -77,7 +90,7 @@ class HomePage extends React.Component {
       nA = B;
       nB = A;
     }
-    let C = Math.ceil(computeNewArg(A, B));
+    let C = Math.floor(computeNewArg(A, B));
     this.props.dispatch(
       loadArguments({
         A,
@@ -89,9 +102,59 @@ class HomePage extends React.Component {
         isParamsError: false,
       }),
     );
+    this.animateDiagram();
   };
+  animateDiagram = () => {
+    setTimeout(this.addVerticalSquareAnimation, 500);
+    setTimeout(this.addDiagonalSquareAnimation, 500);
+
+    setTimeout(this.removeVerticalSquareAnimation, 2000);
+    setTimeout(this.removeDiagonalSquareAnimation, 2000);
+
+    setTimeout(this.addHorizontalSquareAnimation, 2200);
+    setTimeout(this.addDiagonalSquareAnimation, 2200);
+
+    setTimeout(this.removeHorizontalSquareAnimation, 3500);
+    setTimeout(this.removeDiagonalSquareAnimation, 3500);
+  };
+  addHorizontalSquareAnimation = () => {
+    this.setState({
+      animateHorizontalSquare: true,
+      highlightPortionInDiagonal: "horizontal",
+    });
+  };
+  removeHorizontalSquareAnimation = () => {
+    this.setState({
+      animateHorizontalSquare: false,
+      highlightPortionInDiagonal: "",
+    });
+  };
+  addVerticalSquareAnimation = () => {
+    this.setState({
+      animateVerticalSquare: true,
+      highlightPortionInDiagonal: "vertical",
+    });
+  };
+  removeVerticalSquareAnimation = () => {
+    this.setState({
+      animateVerticalSquare: false,
+      highlightPortionInDiagonal: "",
+    });
+  };
+  addDiagonalSquareAnimation = () => {
+    this.setState({
+      animateDiagonalSquare: true,
+    });
+  };
+  removeDiagonalSquareAnimation = () => {
+    this.setState({
+      animateDiagonalSquare: false,
+    });
+  };
+  componentDidMount() {
+    this.animateDiagram();
+  }
   render() {
-    console.log("Homepage props", this.props.arguments);
     const { arguments: args } = this.props;
     const {
       A,
@@ -136,17 +199,34 @@ class HomePage extends React.Component {
                 isDiagonal
                 verticalValue={roundedC < 20 ? roundedB : 5}
                 squareColor2={COLORS.LIGHT_BLUE}
+                animate={this.state.animateDiagonalSquare}
+                animation={scaleUp}
+                highlightPortionInDiagonal={
+                  this.state.highlightPortionInDiagonal
+                }
               />
             </DiagonalSquare>
-            <VerticalSqaure width={10} top={0.1} left={15.1} height={10}>
+            <VerticalSquare
+              width={10}
+              top={0.1}
+              left={15.1}
+              height={10}
+              animate={this.state.animateVerticalSquare}
+            >
               <Grid
                 row={roundedB < 10 ? roundedB : 5}
                 rowWidth={10}
                 rowHeight={roundedB < 10 ? 10 / roundedB : 10 / 5}
                 squareColor={COLORS.LIGHT_BLUE}
               />
-            </VerticalSqaure>
-            <BaseSquare width={15} left={0} height={15} top={0.2}>
+            </VerticalSquare>
+            <BaseSquare
+              width={15}
+              left={0}
+              height={15}
+              top={0.2}
+              animate={this.state.animateHorizontalSquare}
+            >
               <Grid
                 row={roundedA < 15 ? roundedA : 15}
                 rowWidth={15}

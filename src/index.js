@@ -38,7 +38,6 @@ const createMockReducers = (preloadedState) => {
 
   return mockReducers;
 };
-console.log("createMockReducers", createMockReducers(preloadedState), reducer);
 const sagaMiddleware = createSagaMiddleware();
 const rootReducer = combineReducers({
   ...createMockReducers(preloadedState),

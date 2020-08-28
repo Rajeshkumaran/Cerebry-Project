@@ -20,11 +20,15 @@ function Grid({
   isDiagonal = false,
   squareColor2,
   verticalValue,
+  highlightPortionInDiagonal,
+  animation,
+  animate,
 }) {
   const constructGrid = () => {
     return Array(row)
       .fill(0)
       .map((c, ci) => {
+        let squareAnimate = false;
         return (
           <Row rowWidth={rowWidth} rowHeight={rowHeight}>
             {Array(row)
@@ -37,10 +41,23 @@ function Grid({
                     (ci + 1) * (ri + 1) <= (ci + 1) * verticalValue
                       ? squareColor2
                       : squareColor;
+                  if (animate) {
+                    if (highlightPortionInDiagonal === "vertical") {
+                      // animate the vertical square portion in diagonal
+                      squareAnimate = color === squareColor2;
+                    } else if (highlightPortionInDiagonal === "horizontal") {
+                      // animate the vertical square portion in diagonal
+                      squareAnimate = color === squareColor;
+                    }
+                  }
                 }
                 return (
                   <Column columnWidth={rowWidth / row} columnHeight={rowHeight}>
-                    <Square color={color}></Square>
+                    <Square
+                      color={color}
+                      animate={squareAnimate}
+                      animation={animation}
+                    ></Square>
                   </Column>
                 );
               })}
